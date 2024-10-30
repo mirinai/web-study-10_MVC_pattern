@@ -41,3 +41,11 @@ a:hover{
 	text-decoration: underline;
 	color:green;
 }
+#link_num{
+	display:flex;
+	justify-content:center;
+	width: 100%;
+	margin: 0 auto;
+	max-width: 500px;
+	
+}

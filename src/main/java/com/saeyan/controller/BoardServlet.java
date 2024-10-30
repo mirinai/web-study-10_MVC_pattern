@@ -31,8 +31,11 @@ public class BoardServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // 클라이언트 요청에서 command 파라미터 값을 추출
+    	// /BoardServlet?command=값
         String command = request.getParameter("command");
+        // command의 값을 얻어 옴 
         System.out.println("BoardServlet에서 요청을 받음을 확인 : " + command);
+        // BoardServlet에서 요청을 받음을 확인 : 값
         
         // ActionFactory의 싱글톤 인스턴스를 가져와 command에 따른 Action 객체 생성
         ActionFactory af = ActionFactory.getInstance();

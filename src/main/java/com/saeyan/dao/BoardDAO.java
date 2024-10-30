@@ -23,9 +23,9 @@ public class BoardDAO {
 	}
 	// single tone pattern -------------------
 	
-	public List<BoardVO> selectAllBoards() {
+	public List<BoardVO> selectAllBoards(int page, int pageSize) {
 	    // 모든 게시글을 가져오는 SQL 쿼리, 최신 순으로 정렬
-	    String sql = "select * from board order by num desc";
+	    String sql = "select * from board order by num desc limit ? offset ?";
 	    
 	    List<BoardVO> list = new ArrayList<BoardVO>(); // 결과를 저장할 리스트
 	    
@@ -36,6 +36,9 @@ public class BoardDAO {
 	    try {
 	        conn = DBManager.getConnection(); // DB 연결을 가져옴
 	        pstmt = conn.prepareStatement(sql); // SQL 쿼리를 준비
+	        
+	        pstmt.setInt(1, pageSize);
+	        pstmt.setInt(2, (page-1)*pageSize);
 	        
 	        rs = pstmt.executeQuery(); // 쿼리 실행 및 결과를 ResultSet에 저장
 	        while(rs.next()) { // 결과 집합에서 다음 행을 읽음
@@ -137,6 +140,7 @@ public class BoardDAO {
 	            bvo.setPass(rs.getString("pass")); // 비밀번호 설정
 	            bvo.setEmail(rs.getString("email")); // 이메일 설정
 	            bvo.setTitle(rs.getString("title")); // 제목 설정
+	            bvo.setContent(rs.getString("content")); // 내용 설정 - 누락된 부분 추가
 	            bvo.setWritedate(rs.getTimestamp("writedate")); // 작성일 설정
 	            bvo.setReadcount(rs.getInt("readcount")); // 조회수 설정
 	        }
@@ -241,6 +245,28 @@ public class BoardDAO {
 	        DBManager.close(conn, pstmt); // 리소스 해제
 	    }
 	}
-
+	
+	public int getTotalBoardCount() {
+		String sql = "select count(*) from board";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			conn = DBManager.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			
+			rs=pstmt.executeQuery();
+			
+			if(rs.next()) {
+				return rs.getInt(1);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			DBManager.close(conn, pstmt, rs);
+		}
+		return 0;
+	}
 	
 }
